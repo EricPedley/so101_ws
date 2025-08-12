@@ -19,7 +19,7 @@ def generate_launch_description():
 
     # URDF
     lerobot_description_dir = get_package_share_directory("lerobot_description")
-    so101_urdf_path = os.path.join(lerobot_description_dir, "urdf", "so101.urdf.xacro")
+    so101_urdf_path = os.path.join(lerobot_description_dir, "urdf", "so101_gazebo.urdf.xacro")
 
     
 

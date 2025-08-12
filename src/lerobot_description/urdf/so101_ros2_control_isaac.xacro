@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <ros2_control name="RobotSystem" type="system">
+        <!-- ros2_control Isaac -->
+        <hardware>
+            <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
+            <param name="joint_commands_topic">/joint_command</param>
+            <param name="joint_states_topic">/joint_states</param>
+            <param name="sum_wrapped_joint_states">true</param>
+        </hardware>
+
+        <joint name="shoulder_pan">
+            <command_interface name="position">
+                <param name="min">-1.91986</param>
+                <param name="max">1.91986</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+
+        <joint name="shoulder_lift">
+            <command_interface name="position">
+                <param name="min">-1.74533</param>
+                <param name="max">1.74533</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+
+        <joint name="elbow_flex">
+            <command_interface name="position">
+                <param name="min">-1.74533</param>
+                <param name="max">1.5708</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+
+        <joint name="wrist_flex">
+            <command_interface name="position">
+                <param name="min">-1.65806</param>
+                <param name="max">1.65806</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+        <joint name="wrist_roll">
+            <command_interface name="position">
+                <param name="min">-2.79253</param>
+                <param name="max">2.79253</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+
+        <joint name="gripper">
+            <command_interface name="position">
+                <param name="min">-0.174533</param>
+                <param name="max">1.74533</param>
+            </command_interface>
+            <state_interface name="position" />
+        </joint>
+    </ros2_control>
+
+</robot>

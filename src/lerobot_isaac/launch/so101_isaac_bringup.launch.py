@@ -31,7 +31,7 @@ def generate_launch_description():
     model_path = PathJoinSubstitution([
         maxarm_description_pkg,
         "urdf",
-        "so101.urdf.xacro"
+        "so101_isaac.urdf_.xacro"
     ])
     
     model_arg = DeclareLaunchArgument(

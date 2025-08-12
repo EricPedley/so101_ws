@@ -14,7 +14,7 @@ def generate_launch_description():
 
     model_arg = DeclareLaunchArgument(
         name="model", 
-        default_value=os.path.join(maxarm_description_dir, "urdf", "so101.urdf.xacro"),
+        default_value=os.path.join(maxarm_description_dir, "urdf", "so101_gazebo.urdf.xacro"),
         description="Absolute path to robot urdf file")
 
     robot_description = ParameterValue(Command(["xacro ", LaunchConfiguration("model")]), value_type=str)

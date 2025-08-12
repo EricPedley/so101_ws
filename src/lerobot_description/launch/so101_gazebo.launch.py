@@ -15,7 +15,7 @@ def generate_launch_description():
     lerobot_description = get_package_share_directory("lerobot_description")
 
     model_arg = DeclareLaunchArgument(name="model", default_value=os.path.join(
-                                        lerobot_description, "urdf", "so101.urdf.xacro"
+                                        lerobot_description, "urdf", "so101_gazebo.urdf.xacro"
                                         ),
                                       description="Absolute path to robot urdf file"
     )
