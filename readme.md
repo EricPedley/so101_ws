@@ -2,6 +2,9 @@
 
 LeRobot SO-ARM101 integrated into ROS 2 Jazzy.
 
+This fork adds a package to run Isaac Sim with the SO101 arm, and I also plan to add a ros2
+control interface for the real hardware
+
 ## Features
 
 - ✅ ROS 2 Jazzy compatibility
