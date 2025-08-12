@@ -19,9 +19,10 @@ namespace so101_hardware
 
         // Get device path from hardware parameters
         device_path_ = info_.hardware_parameters["device"];
+        calibration_path = info_.hardware_parameters["calibration_file"];
         baud_rate_ = std::stoi(info_.hardware_parameters.count("baud_rate") ? info_.hardware_parameters["baud_rate"] : "115200");
 
-        // TODO: read servo ids and homing offsets from json file with this format:
+        // TODO: read servo_ids and homing offsets from json file with this format:
         // {
         //     "shoulder_pan": {
         //         "id": 1,
@@ -80,12 +81,7 @@ namespace so101_hardware
         FeetechServo servo(device_path_, baud_rate_, 30, servo_ids, false);
 
         // servo.setOperatingMode(servo_ids[0], DriverMode::CONTINUOUS_POSITION);
-        // servo.setReferencePosition(servo_ids[0], current_position[0]);
 
-        // std::vector<double> current;
-        // for(int i = 0; i<1000; i++)
-        // {
-        //     current = servo.getCurrentCurrents();
 
         // TODO: for each servo do this
         // servo.setOperatingMode(servo_ids[0], DriverMode::CONTINUOUS_POSITION);
@@ -110,6 +106,7 @@ namespace so101_hardware
     {
         // TODO: read servo state into memory
 
+        // ex:
         // std::vector<double> current_position = servo.getCurrentPositions();
         // std::cout<< "Got position: " << current_position[0] << std::endl;
         return hardware_interface::return_type::OK;
@@ -119,6 +116,9 @@ namespace so101_hardware
         const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
         // TODO: write positions to servos
+
+        // ex:
+        // servo.setReferencePosition(servo_ids[0], current_position[0]);
         return hardware_interface::return_type::OK;
     }
 

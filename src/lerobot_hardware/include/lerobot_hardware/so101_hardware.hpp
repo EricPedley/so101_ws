@@ -56,15 +56,12 @@ namespace so101_hardware
         std::string device_path_;
         std::string calibration_path;
         int baud_rate_;
-        FeetechServo servo
-
-        // std::vector<std::string> joint_names {"shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"};
-
-        // State variables
-
-        // Command variables
-
-        // Helper methods
+        FeetechServo servo;
+        std::vector<int> servo_ids;
+        int homing_offsets[6];
+        double servo_position_states[6];
+        double servo_position_commands[6];
+        std::vector<std::string> joint_names {"shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"};
     };
 
 } // namespace create2_hardware
