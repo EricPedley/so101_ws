@@ -52,6 +52,12 @@ def generate_launch_description():
         executable="robot_state_publisher",
         parameters=[{"robot_description": robot_description}]
     )
+
+    topic_relay = Node(
+        package = "topic_tools",
+        executable= "relay",
+        parameters = ["/isaac/joint_states", "/joint_states"]
+    )
     
     # RViz node with config file
     rviz_config_path = PathJoinSubstitution([
@@ -72,5 +78,6 @@ def generate_launch_description():
         model_arg,
         launch_isaac_sim,
         robot_state_publisher_node,
-        rviz_node
+        rviz_node,
+        topic_relay
     ])
