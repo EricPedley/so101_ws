@@ -7,6 +7,8 @@ from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitut
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
+from ament_index_python.packages import get_package_share_directory
+from launch.conditions import UnlessCondition
 
 def generate_launch_description():
     # Package names - modify these to match your actual package names
@@ -23,7 +25,7 @@ def generate_launch_description():
     launch_isaac_sim = ExecuteProcess(
         cmd=[str(Path.home() / 'IsaacLab' / '_isaac_sim' / 'python.sh'), isaac_so101_config_path],
         name='isaac_sim',
-        output='screen',
+        output='log',
         shell=True
     )
     
@@ -31,7 +33,7 @@ def generate_launch_description():
     model_path = PathJoinSubstitution([
         maxarm_description_pkg,
         "urdf",
-        "so101_isaac.urdf_.xacro"
+        "so101_isaac.urdf.xacro"
     ])
     
     model_arg = DeclareLaunchArgument(
@@ -73,11 +75,39 @@ def generate_launch_description():
         output="screen",
         arguments=["-d", rviz_config_path]
     )
+
+    controller_manager = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[
+            {"robot_description": robot_description},
+            os.path.join(
+                get_package_share_directory("lerobot_controller"),
+                "config",
+                "so101_controllers.yaml",
+            ),
+        ]
+    )
+
+    arm_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["arm_controller", "--controller-manager", "/controller_manager"],
+    )
+
+    gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
+    )
     
     return LaunchDescription([
         model_arg,
         launch_isaac_sim,
         robot_state_publisher_node,
         rviz_node,
-        topic_relay
+        topic_relay,
+        controller_manager,
+        arm_controller_spawner,
+        gripper_controller_spawner,
     ])

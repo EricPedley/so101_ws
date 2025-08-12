@@ -286,7 +286,7 @@
 	</link>
 
 	<!-- Link gripper -->
-	<link name="gripper">
+	<link name="gripper_link">
 		<inertial>
 			<origin xyz="0.000213627 0.000245138 -0.025187" rpy="0 0 0" />
 			<mass value="0.087" />
@@ -354,7 +354,7 @@
 	<!-- Joint from gripper to jaw -->
 	<joint name="gripper" type="revolute">
 		<origin xyz="0.0202 0.0188 -0.0234" rpy="1.5708 -5.14108e-17 -1.38655e-14" />
-		<parent link="gripper" />
+		<parent link="gripper_link" />
 		<child link="jaw" />
 		<axis xyz="0 0 1" />
 		<limit effort="10" velocity="10" lower="-0.174533" upper="1.74533" />
@@ -375,7 +375,7 @@
 	<joint name="wrist_roll" type="revolute">
 		<origin xyz="0 -0.0611 0.0181" rpy="1.5708 -9.38083e-08 3.14159" />
 		<parent link="wrist" />
-		<child link="gripper" />
+		<child link="gripper_link" />
 		<axis xyz="0 0 1" />
 		<limit effort="10" velocity="10" lower="-2.79253" upper="2.79253" />
 	</joint>
