@@ -56,7 +56,7 @@ def generate_launch_description():
     topic_relay = Node(
         package = "topic_tools",
         executable= "relay",
-        parameters = ["/isaac/joint_states", "/joint_states"]
+        parameters = ["isaac/joint_states", "joint_states"]
     )
     
     # RViz node with config file
