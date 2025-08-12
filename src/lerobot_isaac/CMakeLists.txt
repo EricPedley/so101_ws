@@ -25,6 +25,7 @@ endif()
 
 install(FILES
   so101_new_calib.usd
+  so101_isaac.py
   DESTINATION share/${PROJECT_NAME}/
 )
 
