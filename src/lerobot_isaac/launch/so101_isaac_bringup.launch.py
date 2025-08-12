@@ -105,7 +105,7 @@ def generate_launch_description():
         model_arg,
         launch_isaac_sim,
         robot_state_publisher_node,
-        rviz_node,
+        # rviz_node,
         topic_relay,
         controller_manager,
         arm_controller_spawner,
