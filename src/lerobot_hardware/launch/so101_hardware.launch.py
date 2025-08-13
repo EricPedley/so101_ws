@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, DeclareLaunchArgument
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, FindExecutable
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
@@ -28,10 +28,21 @@ def generate_launch_description():
         description="Absolute path to robot urdf file"
     )
     
-    # Robot description parameter
-    robot_description = ParameterValue(
-        Command(["xacro ", LaunchConfiguration("model")]), 
-        value_type=str
+    robot_description = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            model_path,
+            " ",
+            "device_path:=",
+            "/dev/ttyACM0",
+            " ",
+            "baud_rate:=",
+            "115200",
+            " ",
+            "calibration_path:=",
+            "/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json",
+        ]
     )
     
     # Robot State Publisher node

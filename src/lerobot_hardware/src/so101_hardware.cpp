@@ -56,7 +56,7 @@ namespace so101_hardware
 
         RCLCPP_INFO(
             rclcpp::get_logger("SO101HardwareInterface"),
-            "Initialized Create2 hardware interface with device: %s", device_path_.c_str());
+            "Initialized SO101 hardware interface with device: %s", device_path_.c_str());
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -136,4 +136,4 @@ namespace so101_hardware
 
 #include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(
-    create2_hardware::SO101HardwareInterface, hardware_interface::SystemInterface)
+    so101_hardware::SO101HardwareInterface, hardware_interface::SystemInterface)

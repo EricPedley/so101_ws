@@ -23,4 +23,64 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+# Create the hardware interface library
+add_library(so101_hardware SHARED
+  src/so101_hardware_interface.cpp
+)
+
+target_compile_features(so101_hardware PUBLIC cxx_std_17)
+target_include_directories(so101_hardware PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/so101_hardware>
+)
+
+ament_target_dependencies(so101_hardware PUBLIC
+  hardware_interface
+  pluginlib
+  rclcpp
+  rclcpp_lifecycle
+)
+
+# Export hardware plugins
+pluginlib_export_plugin_description_file(hardware_interface so101_hardware.xml)
+
+# Install
+install(DIRECTORY include/
+  DESTINATION include/so101_hardware
+)
+
+install(TARGETS so101_hardware
+  EXPORT export_so101_hardware
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY
+  launch
+  urdf
+  config
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(FILES so101_hardware.xml
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Export dependencies
+ament_export_targets(export_so101_hardware HAS_LIBRARY_TARGET)
+ament_export_dependencies(
+  hardware_interface
+  pluginlib
+  rclcpp
+  rclcpp_lifecycle
+)
+
+
+
 ament_package()

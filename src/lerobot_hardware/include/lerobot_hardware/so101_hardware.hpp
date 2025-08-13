@@ -1,5 +1,4 @@
-#ifndef CREATE2_HARDWARE_INTERFACE_HPP
-#define CREATE2_HARDWARE_INTERFACE_HPP
+#pragma once
 
 #include <chrono>
 #include <cmath>
@@ -63,6 +62,4 @@ namespace so101_hardware
         double servo_position_commands[6];
     };
 
-} // namespace create2_hardware
-
-#endif
+} // namespace so101_hardware

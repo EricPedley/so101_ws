@@ -7,7 +7,7 @@
             <plugin>lerobot_hardware/SO101HardwareInterface</plugin>
             <param name="device">$(arg device_path)</param>
             <param name="baud_rate">$(arg baud_rate)</param>
-            <param name="calibration_path">/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json</param>
+            <param name="calibration_path">$(arg calibration_path)</param>
         </hardware>
 
         <joint name="shoulder_pan">
