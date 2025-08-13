@@ -5,6 +5,9 @@
 #include <unistd.h> // write(), read(), close()
 
 #include "rclcpp/rclcpp.hpp"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace so101_hardware
 {
@@ -23,6 +26,14 @@ namespace so101_hardware
         baud_rate_ = std::stoi(info_.hardware_parameters.count("baud_rate") ? info_.hardware_parameters["baud_rate"] : "115200");
 
         // TODO: read servo_ids and homing offsets from json file with this format:
+        // /home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json
+        std::ifstream file(calibration_path);
+        json data = json::parse(file);
+        for(size_t i =0; i<info_.joints.size();i++) {
+            const std::string joint_name = info_.joints[i].name;
+            servo_ids.emplace_back(data[joint_name]["id"]);
+            homing_offsets[i] = data[joint_name]["homing_offset"]; 
+        }
         // {
         //     "shoulder_pan": {
         //         "id": 1,
@@ -54,9 +65,10 @@ namespace so101_hardware
     {
         std::vector<hardware_interface::StateInterface> state_interfaces;
 
-        // example:
-        // state_interfaces.emplace_back(hardware_interface::StateInterface(
-        //     info_.joints[0].name, "position", &left_wheel_position_));
+        for(size_t i=0; i<info_.joints.size();i++) {
+            state_interfaces.emplace_back(hardware_interface::StateInterface(
+                info_.joints[i].name, "position", &servo_position_states[i]));
+        }
 
         return state_interfaces;
     }
@@ -65,10 +77,10 @@ namespace so101_hardware
     {
         std::vector<hardware_interface::CommandInterface> command_interfaces;
 
-        //example:
-        // command_interfaces.emplace_back(hardware_interface::CommandInterface(
-        //     info_.joints[0].name, "velocity", &left_wheel_velocity_command_));
-
+        for(size_t i=0; i<info_.joints.size();i++) {
+            command_interfaces.emplace_back(hardware_interface::CommandInterface(
+                info_.joints[i].name, "position", &servo_position_commands[i]));
+        }
 
         return command_interfaces;
     }
@@ -80,11 +92,10 @@ namespace so101_hardware
 
         FeetechServo servo(device_path_, baud_rate_, 30, servo_ids, false);
 
-        // servo.setOperatingMode(servo_ids[0], DriverMode::CONTINUOUS_POSITION);
 
-
-        // TODO: for each servo do this
-        // servo.setOperatingMode(servo_ids[0], DriverMode::CONTINUOUS_POSITION);
+        for(size_t i=0; i<info_.joints.size();i++) {
+            servo.setOperatingMode(servo_ids[i], DriverMode::CONTINUOUS_POSITION);
+        }
 
         RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Successfully activated!");
         return hardware_interface::CallbackReturn::SUCCESS;
@@ -104,21 +115,19 @@ namespace so101_hardware
     hardware_interface::return_type SO101HardwareInterface::read(
         const rclcpp::Time &time, const rclcpp::Duration &period)
     {
-        // TODO: read servo state into memory
-
-        // ex:
-        // std::vector<double> current_position = servo.getCurrentPositions();
-        // std::cout<< "Got position: " << current_position[0] << std::endl;
+        std::vector<double> current_position = servo.getCurrentPositions();
+        for(size_t i=0; i<info_.joints.size();i++) {
+            servo_position_states[i] = current_position[i];
+        }
         return hardware_interface::return_type::OK;
     }
 
     hardware_interface::return_type SO101HardwareInterface::write(
         const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
-        // TODO: write positions to servos
-
-        // ex:
-        // servo.setReferencePosition(servo_ids[0], current_position[0]);
+        for(size_t i=0; i<info_.joints.size();i++) {
+            servo.setReferencePosition(servo_ids[i], servo_position_commands[i]);
+        }
         return hardware_interface::return_type::OK;
     }
 
