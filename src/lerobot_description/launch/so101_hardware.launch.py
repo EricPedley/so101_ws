@@ -35,12 +35,9 @@ def generate_launch_description():
             " ",
             "device_path:=",
             "/dev/ttyACM0",
-            " ",
-            "baud_rate:=",
-            "115200",
-            " ",
-            "calibration_path:=",
-            '"/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json"',
+            # " ",
+            # "calibration_path:=",
+            # '"/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json"',
         ]
     )
     
@@ -90,12 +87,19 @@ def generate_launch_description():
         executable="spawner",
         arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
     )
+
+    joint_broadcaster_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    )
     
     return LaunchDescription([
         model_arg,
         robot_state_publisher_node,
-        rviz_node,
+        # rviz_node,
         controller_manager,
         arm_controller_spawner,
         gripper_controller_spawner,
+        joint_broadcaster_controller_spawner
     ])

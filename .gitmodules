@@ -1,3 +1,6 @@
 [submodule "src/feetech_cpp_lib"]
 	path = src/feetech_cpp_lib
 	url = https://github.com/BioMorphic-Intelligence-Lab/feetech_cpp_lib.git
+[submodule "src/feetech_ros2_driver"]
+	path = src/feetech_ros2_driver
+	url = https://github.com/JafarAbdi/feetech_ros2_driver.git
