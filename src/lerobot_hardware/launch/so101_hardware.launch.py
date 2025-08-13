@@ -1,67 +1,72 @@
+#!/usr/bin/env python3
 import os
+from pathlib import Path
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import UnlessCondition
-from launch.substitutions import LaunchConfiguration
+from launch.actions import ExecuteProcess, DeclareLaunchArgument
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
-from launch.substitutions import Command
 from ament_index_python.packages import get_package_share_directory
 
-
 def generate_launch_description():
-
-    is_sim_arg = DeclareLaunchArgument(
-        "is_sim",
-        default_value="True"
+    # Package names - modify these to match your actual package names
+    isaac_package = FindPackageShare('lerobot_isaac')
+    maxarm_description_pkg = FindPackageShare("lerobot_description")
+    
+    # Path to your python script relative to the package
+    # URDF model argument using PathJoinSubstitution
+    model_path = PathJoinSubstitution([
+        maxarm_description_pkg,
+        "urdf",
+        "so101_feetech.urdf.xacro"
+    ])
+    
+    model_arg = DeclareLaunchArgument(
+        name="model", 
+        default_value=model_path,
+        description="Absolute path to robot urdf file"
     )
-
-    is_sim = LaunchConfiguration("is_sim")
-
+    
+    # Robot description parameter
     robot_description = ParameterValue(
-        Command(
-            [
-                "xacro ",
-                os.path.join(
-                    get_package_share_directory("lerobot_description"),
-                    "urdf",
-                    "so101_gazebo.urdf.xacro",
-                ),
-            ]
-        ),
-        value_type=str,
+        Command(["xacro ", LaunchConfiguration("model")]), 
+        value_type=str
     )
-
+    
+    # Robot State Publisher node
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        condition=UnlessCondition(is_sim),
-        parameters=[{"robot_description": robot_description}],
+        parameters=[{"robot_description": robot_description}]
+    )
+
+    # RViz node with config file
+    rviz_config_path = PathJoinSubstitution([
+        maxarm_description_pkg,
+        "rviz",
+        "display.rviz"
+    ])
+    
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="screen",
+        arguments=["-d", rviz_config_path]
     )
 
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
-            {"robot_description": robot_description,
-             "use_sim_time": is_sim},
+            {"robot_description": robot_description},
             os.path.join(
                 get_package_share_directory("lerobot_controller"),
                 "config",
                 "so101_controllers.yaml",
             ),
-        ],
-        condition=UnlessCondition(is_sim),
-    )
-
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
+        ]
     )
 
     arm_controller_spawner = Node(
@@ -75,14 +80,12 @@ def generate_launch_description():
         executable="spawner",
         arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
     )
-
-    return LaunchDescription(
-        [
-            is_sim_arg,
-            robot_state_publisher_node,
-            controller_manager,
-            joint_state_broadcaster_spawner,
-            arm_controller_spawner,
-            gripper_controller_spawner,
-        ]
-    )
+    
+    return LaunchDescription([
+        model_arg,
+        robot_state_publisher_node,
+        rviz_node,
+        controller_manager,
+        arm_controller_spawner,
+        gripper_controller_spawner,
+    ])
