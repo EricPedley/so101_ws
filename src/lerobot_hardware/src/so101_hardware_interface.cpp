@@ -1,4 +1,4 @@
-#include "lerobot_hardware/so101_hardware.hpp"
+#include "lerobot_hardware/so101_hardware_interface.hpp"
 
 #include <limits>
 #include <vector>

@@ -17,7 +17,7 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-#include "feetech_lib.hpp"
+#include "feetech_cpp_lib/feetech_lib.hpp"
 
 #include <termios.h>
 #include <fcntl.h>
