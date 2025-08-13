@@ -22,11 +22,12 @@ namespace so101_hardware
 
         // Get device path from hardware parameters
         device_path_ = info_.hardware_parameters["device"];
-        calibration_path = info_.hardware_parameters["calibration_file"];
+        calibration_path = "/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json";//info_.hardware_parameters["calibration_file"];
         baud_rate_ = std::stoi(info_.hardware_parameters.count("baud_rate") ? info_.hardware_parameters["baud_rate"] : "115200");
 
         // TODO: read servo_ids and homing offsets from json file with this format:
         // /home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json
+        RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Opening calibration file at %s", calibration_path.c_str());
         std::ifstream file(calibration_path);
         json data = json::parse(file);
         for(size_t i =0; i<info_.joints.size();i++) {
@@ -90,11 +91,12 @@ namespace so101_hardware
     {
         RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Activating...");
 
-        FeetechServo servo(device_path_, baud_rate_, 30, servo_ids, false);
+        RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Connecting to serial %s, baud %d", device_path_, baud_rate_);
+        servo = std::make_unique<FeetechServo>(device_path_, baud_rate_, 30, servo_ids, false);
 
 
         for(size_t i=0; i<info_.joints.size();i++) {
-            servo.setOperatingMode(servo_ids[i], DriverMode::CONTINUOUS_POSITION);
+            servo->setOperatingMode(servo_ids[i], DriverMode::CONTINUOUS_POSITION);
         }
 
         RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Successfully activated!");
@@ -106,7 +108,7 @@ namespace so101_hardware
     {
         RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Deactivating...");
 
-        servo.close();
+        servo->close();
 
         RCLCPP_INFO(rclcpp::get_logger("SO101HardwareInterface"), "Successfully deactivated!");
         return hardware_interface::CallbackReturn::SUCCESS;
@@ -115,7 +117,7 @@ namespace so101_hardware
     hardware_interface::return_type SO101HardwareInterface::read(
         const rclcpp::Time &time, const rclcpp::Duration &period)
     {
-        std::vector<double> current_position = servo.getCurrentPositions();
+        std::vector<double> current_position = servo->getCurrentPositions();
         for(size_t i=0; i<info_.joints.size();i++) {
             servo_position_states[i] = current_position[i];
         }
@@ -126,7 +128,7 @@ namespace so101_hardware
         const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
         for(size_t i=0; i<info_.joints.size();i++) {
-            servo.setReferencePosition(servo_ids[i], servo_position_commands[i]);
+            servo->setReferencePosition(servo_ids[i], servo_position_commands[i]);
         }
         return hardware_interface::return_type::OK;
     }

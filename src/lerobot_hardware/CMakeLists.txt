@@ -66,8 +66,6 @@ install(TARGETS so101_hardware
 
 install(DIRECTORY
   launch
-  urdf
-  config
   DESTINATION share/${PROJECT_NAME}
 )
 

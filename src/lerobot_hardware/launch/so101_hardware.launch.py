@@ -11,7 +11,6 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     # Package names - modify these to match your actual package names
-    isaac_package = FindPackageShare('lerobot_isaac')
     maxarm_description_pkg = FindPackageShare("lerobot_description")
     
     # Path to your python script relative to the package
@@ -41,7 +40,7 @@ def generate_launch_description():
             "115200",
             " ",
             "calibration_path:=",
-            "/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json",
+            '"/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json"',
         ]
     )
     

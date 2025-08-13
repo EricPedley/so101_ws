@@ -4,7 +4,7 @@
     <ros2_control name="RobotSystem" type="system">
         <!-- ros2_control Isaac -->
         <hardware>
-            <plugin>lerobot_hardware/SO101HardwareInterface</plugin>
+            <plugin>so101_hardware/SO101HardwareInterface</plugin>
             <param name="device">$(arg device_path)</param>
             <param name="baud_rate">$(arg baud_rate)</param>
             <param name="calibration_path">$(arg calibration_path)</param>

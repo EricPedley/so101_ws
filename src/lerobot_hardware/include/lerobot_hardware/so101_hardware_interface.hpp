@@ -55,7 +55,7 @@ namespace so101_hardware
         std::string device_path_;
         std::string calibration_path;
         int baud_rate_;
-        FeetechServo servo;
+        std::unique_ptr<FeetechServo> servo;
         std::vector<uint8_t> servo_ids;
         int homing_offsets[6];
         double servo_position_states[6];
