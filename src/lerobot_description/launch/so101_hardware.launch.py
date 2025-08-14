@@ -39,8 +39,8 @@ def generate_launch_description():
             "device_path:=",
             "/dev/ttyACM0",
             *[
-                f' offset_{i+1}:={data["homing_offset"]}'
-                for i, data in enumerate(calib.values())
+                f' offset_{data["id"]}:={2048}'
+                for data in calib.values()
             ]
             # " ",
             # "calibration_path:=",
