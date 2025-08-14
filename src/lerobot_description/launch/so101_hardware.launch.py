@@ -8,6 +8,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 from ament_index_python.packages import get_package_share_directory
+import json
 
 def generate_launch_description():
     # Package names - modify these to match your actual package names
@@ -26,6 +27,8 @@ def generate_launch_description():
         default_value=model_path,
         description="Absolute path to robot urdf file"
     )
+
+    calib: dict = json.load(open('/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json', 'r'))
     
     robot_description = Command(
         [
@@ -35,6 +38,10 @@ def generate_launch_description():
             " ",
             "device_path:=",
             "/dev/ttyACM0",
+            *[
+                f' offset_{i+1}:={data["homing_offset"]}'
+                for i, data in enumerate(calib.values())
+            ]
             # " ",
             # "calibration_path:=",
             # '"/home/miller/.cache/huggingface/lerobot/calibration/robots/so101_follower/erics_first_so101.json"',
