@@ -67,7 +67,7 @@ from skrl.utils.runner.torch import Runner
 
 from isaaclab.utils.math import quat_apply
 
-so101_usd_path = Path(__file__).parent / 'models/SO101/so101_new_calib/so101_new_calib.usd'
+so101_usd_path = Path(__file__).parent.parent / 'so101_new_calib.usd'
 
 joint_names = [
     "shoulder_pan",
